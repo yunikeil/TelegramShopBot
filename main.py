@@ -7,11 +7,14 @@ from core.database import init_models
 from app import bot_handlers
 
 
+tg_logger = create_logger("telegram")
+
+
 async def init_application(application: Application) -> None:
-    create_logger("telegram")
     await init_models()
     
     ...
+    
 
 if __name__ == "__main__":
     builder = Application.builder()

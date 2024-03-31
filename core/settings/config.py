@@ -3,7 +3,7 @@ import os
 
 # Загрузка переменных из .env файла
 
-current_file_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+current_file_path = os.path.dirname(os.path.abspath(__file__))
 root_path = os.path.dirname(os.path.dirname(current_file_path))
 env_path = os.path.join(root_path, ".env")
 
@@ -23,9 +23,9 @@ DATABASE_URL: str = os.getenv("DATABASE_URL")
 REDIS_URL: str = os.getenv("REDIS_URL")
 TG_TOKEN: str = os.getenv("TG_TOKEN")
 
-TG_LOG_TOKEN: str = os.getenv("FILES_DELETE_MODE")
-TG_INFO_LOG_CHANNEL: int = int(os.getenv("FILES_DELETE_MODE"))
-TG_ERROR_LOG_CHANNEL: int = int(os.getenv("FILES_DELETE_MODE"))
+TG_LOG_TOKEN: str = os.getenv("TG_LOG_TOKEN")
+TG_INFO_LOG_CHANNEL: int = int(os.getenv("TG_INFO_LOG_CHANNEL"))
+TG_ERROR_LOG_CHANNEL: int = int(os.getenv("TG_ERROR_LOG_CHANNEL"))
 
 FILES_DELETE_MODE: str = os.getenv("FILES_DELETE_MODE")
 DATA_PATH: str = os.path.join(root_path, "data")
