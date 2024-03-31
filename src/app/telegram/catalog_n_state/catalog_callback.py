@@ -2,9 +2,9 @@ import telegram
 from telegram import InlineKeyboardMarkup, Update
 from telegram.ext import filters, CallbackQueryHandler, ContextTypes
 
+from app.models import Catalog
 from core.database import get_session
 from app.services import get_all_catalogs, get_catalog_by_id, get_catalogs_count
-from app.models import Catalog
 from .__addons import get_offset_limit_buttons, get_catalog_back_keyboard
 
 
