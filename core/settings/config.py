@@ -4,7 +4,8 @@ import os
 # Загрузка переменных из .env файла
 
 current_file_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-env_path = os.path.join(os.path.dirname(current_file_path) , ".env")
+root_path = os.path.dirname(os.path.dirname(current_file_path))
+env_path = os.path.join(root_path, ".env")
 
 load_dotenv(dotenv_path=env_path, override=True)
 
@@ -22,6 +23,10 @@ DATABASE_URL: str = os.getenv("DATABASE_URL")
 REDIS_URL: str = os.getenv("REDIS_URL")
 TG_TOKEN: str = os.getenv("TG_TOKEN")
 
-TG_LOG_TOKEN: str
-TG_INFO_LOG_CHANNEL: int
-TG_ERROR_LOG_CHANNEL: int
+TG_LOG_TOKEN: str = os.getenv("FILES_DELETE_MODE")
+TG_INFO_LOG_CHANNEL: int = int(os.getenv("FILES_DELETE_MODE"))
+TG_ERROR_LOG_CHANNEL: int = int(os.getenv("FILES_DELETE_MODE"))
+
+FILES_DELETE_MODE: str = os.getenv("FILES_DELETE_MODE")
+DATA_PATH: str = os.path.join(root_path, "data")
+DEFERRED_HOUR_TO_DELETE: int = int(os.getenv("DEFERRED_HOUR_TO_DELETE"))
