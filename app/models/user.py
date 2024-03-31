@@ -1,7 +1,7 @@
 import time
 from typing import TYPE_CHECKING
 
-from sqlalchemy import Column, Integer, Enum
+from sqlalchemy import Column, Integer, BIGINT, Enum
 from sqlalchemy.orm import relationship, Mapped
 
 from core.database import Base
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 class User(Base):
     __tablename__ = "user"
     
-    tg_id = Column(Integer, primary_key=True)
+    tg_id = Column(BIGINT, primary_key=True)
     role = Column(Enum('user', 'admin', name="user_roles"), default="user", nullable=False)
     created_at = Column(Integer, nullable=False, default=int(time.time()))
     
