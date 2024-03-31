@@ -1,0 +1,12 @@
+asyncpg
+sqlalchemy[asyncio]
+alembic
+redis
+python-dotenv
+
+python-telegram-bot[all]
+
+pydantic
+pytest
+
+colorlog
