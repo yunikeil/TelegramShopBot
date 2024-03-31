@@ -15,7 +15,6 @@ class User(Base):
     
     tg_id = Column(BIGINT, primary_key=True)
     role = Column(Enum('user', 'admin', name="user_roles"), default="user", nullable=False)
-    created_at = Column(Integer, nullable=False, default=int(time.time()))
     
     shopping_carts: Mapped[list["ShoppingCart"]] = relationship(
         back_populates="user", lazy="selectin"

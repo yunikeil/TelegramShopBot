@@ -4,7 +4,7 @@ import os
 # Загрузка переменных из .env файла
 
 current_file_path = os.path.dirname(os.path.abspath(__file__))
-root_path = os.path.dirname(os.path.dirname(current_file_path))
+root_path = os.path.dirname(os.path.dirname(os.path.dirname(current_file_path)))
 env_path = os.path.join(root_path, ".env")
 
 load_dotenv(dotenv_path=env_path, override=True)
