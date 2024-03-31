@@ -86,7 +86,6 @@ def get_shopping_cart_callback():
             pass
 
     async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-        print(update.callback_query.data)
         if "delete" in update.callback_query.data:
             await callback_delete(update, context)
         else:
