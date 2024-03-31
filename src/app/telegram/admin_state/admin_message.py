@@ -9,13 +9,13 @@ from .__addons import after_get_create_catalog_message_keyboard
 
 
 def get_create_catalog_message():
-    pattern = filters.TEXT and filters.Regex(r"\w+\n\w+\n[0-9]+")
+    pattern = filters.TEXT and filters.Regex(r".+\n.+\n[0-9]+")
 
     async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         user_message = update.message.text
         results: list[str] = []
         
-        if results := re.findall(r"\w+\n\w+\n[0-9]+", user_message):
+        if results := re.findall(r".+\n.+\n[0-9]++", user_message):
             async with get_session() as db_session:
                 for result in results:
                     result = result.split("\n")
@@ -31,13 +31,13 @@ def get_create_catalog_message():
 
 # TODO
 def get_update_catalog_message():
-    pattern = filters.TEXT and filters.Regex(r"\w+\n\w+\n[0-9]+")
+    pattern = filters.TEXT and filters.Regex(r".+\n.+\n[0-9]+")
 
     async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         user_message = update.message.text
         results: list[str] = []
         
-        if results := re.findall(r"\w+\n\w+\n[0-9]+", user_message):
+        if results := re.findall(r".+\n.+\n[0-9]+", user_message):
             async with get_session() as db_session:
                 for result in results:
                     result = result.split("\n")
