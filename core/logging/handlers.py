@@ -2,7 +2,7 @@ import traceback
 import logging
 import asyncio
 
-from core.utils.telegram import send_telegram_message
+from core.telegram.raw_sender import send_telegram_message
 from core.settings import config
 
 

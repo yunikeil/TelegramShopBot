@@ -21,3 +21,7 @@ ADMIN_IDS: list[int] = [int(id) for id in os.getenv("ADMIN_IDS").split(",")]
 DATABASE_URL: str = os.getenv("DATABASE_URL")
 REDIS_URL: str = os.getenv("REDIS_URL")
 TG_TOKEN: str = os.getenv("TG_TOKEN")
+
+TG_LOG_TOKEN: str
+TG_INFO_LOG_CHANNEL: int
+TG_ERROR_LOG_CHANNEL: int
