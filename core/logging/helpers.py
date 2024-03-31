@@ -2,7 +2,7 @@ import logging
 import colorlog
 
 
-def setup_base_logger(base_logger_name, base_logger_level=logging.INFO):
+def create_logger(base_logger_name, base_logger_level=logging.INFO):
     logger = logging.getLogger(base_logger_name)
     logger.setLevel(base_logger_level)
 
