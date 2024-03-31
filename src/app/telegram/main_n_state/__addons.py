@@ -10,7 +10,7 @@ def get_main_keyboard(is_admin: bool):
             InlineKeyboardButton("Каталог товаров", callback_data="catalog:0:10"),
         ],
         [
-            InlineKeyboardButton("Корзина товаров", callback_data="shopping_cart:0:10:0"),
+            InlineKeyboardButton("Корзина товаров", callback_data="shopping_cart:0:10:0;main"),
         ],
         [
             InlineKeyboardButton("О нас", callback_data="about_us"),

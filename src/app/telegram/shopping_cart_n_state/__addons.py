@@ -1,7 +1,7 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
 
-def get_offset_limit_buttons(current_offset: int, current_limit: int, cart_count: int):
+def get_offset_limit_buttons(current_offset: int, current_limit: int, cart_count: int, return_to: str = "main"):   
     previous_offset = max(0, current_offset - current_limit)
     next_offset = max(0, current_offset + current_limit)
             
@@ -17,7 +17,7 @@ def get_offset_limit_buttons(current_offset: int, current_limit: int, cart_count
             InlineKeyboardButton("⏩" if not is_last_page else "❌⏩", callback_data=f"shopping_cart:{cart_count - cart_count % current_limit}:{current_limit}:0" if not is_last_page else f"shopping_cart:-1:-1:0")
         ],
         [
-            InlineKeyboardButton("Вернуться ↩️", callback_data=f"main")
+            InlineKeyboardButton("Вернуться ↩️", callback_data=return_to)
         ]
     ]
 

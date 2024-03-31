@@ -25,7 +25,7 @@ def get_offset_limit_buttons(current_offset: int, current_limit: int, catalog_co
     ]
 
 
-def get_catalog_back_keyboard(catalog_id: int, current_offset: int, current_limit: int):
+def get_catalog_back_keyboard(catalog_id: int, current_offset: int, current_limit: int, return_to: str = "main"):   
     return InlineKeyboardMarkup(
         [
             [
@@ -38,7 +38,7 @@ def get_catalog_back_keyboard(catalog_id: int, current_offset: int, current_limi
                 InlineKeyboardButton("Вернуться ↩️", callback_data=f"catalog:{current_offset}:{current_limit}")
             ],
             [
-                InlineKeyboardButton("Перейти в корзину ➡️", callback_data=f"shopping_cart:0:10:0")
+                InlineKeyboardButton("Перейти в корзину ➡️", callback_data=f"shopping_cart:0:10:0;{return_to}")
             ],
         ]
     )

@@ -31,10 +31,11 @@ def get_add_to_shopping_cart_callback():
 
 
 def get_shopping_cart_callback():
-    pattern = r"^(shopping_cart|delete_shopping_cart):-?\d+:-?\d+:-?\d+$"
+    pattern = r"^(shopping_cart|delete_shopping_cart):-?\d+:-?\d+:-?\d;.++$"
 
     async def callback_delete(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-        _, _, _, catalog_id = update.callback_query.data.split(":")
+        base_callback_data, return_callback_data = update.callback_query.data.split(";")
+        _, _, _, catalog_id = base_callback_data.split(":")
         
         cart: ShoppingCart | None = None
         
@@ -54,7 +55,8 @@ def get_shopping_cart_callback():
         if not is_answered:
             await update.callback_query.answer()
         
-        _, offset, limit, _ = update.callback_query.data.split(":")
+        base_callback_data, return_callback_data = update.callback_query.data.split(";")
+        _, offset, limit, _ = base_callback_data.split(":")
                 
         if offset == '-1' or limit == '-1':
             return
@@ -76,14 +78,15 @@ def get_shopping_cart_callback():
                 reply_markup=InlineKeyboardMarkup(
                     [
                         *[catalog.to_button(int(offset), int(limit)) for catalog in carts],
-                        *get_offset_limit_buttons(int(offset), int(limit), count_carts),
+                        *get_offset_limit_buttons(int(offset), int(limit), count_carts, return_to=return_callback_data),
                     ]
                 ),
             )
         except telegram.error.BadRequest:
             pass
 
-    async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:       
+    async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+        print(update.callback_query.data)
         if "delete" in update.callback_query.data:
             await callback_delete(update, context)
         else:
