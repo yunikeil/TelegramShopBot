@@ -1,7 +1,7 @@
 import re
 
 from telegram import Update
-from telegram.ext import filters, ConversationHandler, MessageHandler, ContextTypes
+from telegram.ext import filters, ConversationHandler, CommandHandler, MessageHandler, ContextTypes
 
 from core.database import get_session
 from app.services import create_catalog
@@ -23,10 +23,31 @@ def get_create_catalog_message():
                         db_session, result[0], result[1], int(result[2])
                     )
 
-        await update.message.reply_text(f"added: {len(results)} result(s)", reply_markup=after_get_create_catalog_message_keyboard)
+        await update.message.reply_text(f"added: {len(results)} result(s), now add file, or use /skip")
+        return "enter_create_catalogs_photo"
+
+    return MessageHandler(pattern, callback)
+
+
+def get_create_catalog_photo():
+    pattern = filters.PHOTO
+    
+    async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+        file = await update.message.photo[-1].get_file()
+        await update.message.reply_text(f"File received!", reply_markup=after_get_create_catalog_message_keyboard)
         return ConversationHandler.END
 
     return MessageHandler(pattern, callback)
+
+
+def get_ckip_catalog_photo():
+    command = "skip"
+    
+    async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        await update.message.reply_text(f"File skipped!", reply_markup=after_get_create_catalog_message_keyboard)
+        return ConversationHandler.END
+
+    return CommandHandler(command, callback)
 
 
 # TODO
