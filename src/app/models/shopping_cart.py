@@ -35,11 +35,11 @@ class ShoppingCart(Base):
             """
         )
 
-    def to_button(self, offset: int, limit: int):
+    def to_button(self, offset: int, limit: int, return_to: str = "main"):
         return [
             InlineKeyboardButton(
                 text=f"{self.catalog.name}; \n{self.catalog.description}",
-                callback_data=f"solo_shopping_cart:{self.catalog_id}:{offset}:{limit}",
+                callback_data=f"solo_shopping_cart:{self.catalog_id}:{offset}:{limit};{return_to}",
             )
         ]
 
