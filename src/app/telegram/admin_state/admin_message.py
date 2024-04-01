@@ -15,7 +15,7 @@ def get_create_catalog_message():
         user_message = update.message.text
         results: list[str] = []
         
-        if results := re.findall(r".+\n.+\n[0-9]++", user_message):
+        if results := re.findall(r".+\n.+\n[0-9]+", user_message):
             async with get_session() as db_session:
                 for result in results:
                     result = result.split("\n")

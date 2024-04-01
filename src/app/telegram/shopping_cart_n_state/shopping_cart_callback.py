@@ -31,7 +31,7 @@ def get_add_to_shopping_cart_callback():
 
 
 def get_shopping_cart_callback():
-    pattern = r"^(shopping_cart|delete_shopping_cart):-?\d+:-?\d+:-?\d;.++$"
+    pattern = r"^(shopping_cart|delete_shopping_cart):-?\d+:-?\d+:-?\d;.+$"
 
     async def callback_delete(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         base_callback_data, return_callback_data = update.callback_query.data.split(";")
