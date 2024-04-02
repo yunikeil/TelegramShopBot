@@ -2,9 +2,9 @@ import telegram
 from telegram import InlineKeyboardMarkup, Update
 from telegram.ext import filters, CallbackQueryHandler, ContextTypes
 
+from app.models import Catalog
 from core.database import get_session
 from app.services import get_all_catalogs, get_catalog_by_id, get_catalogs_count
-from app.models import Catalog
 from .__addons import get_offset_limit_buttons, get_catalog_back_keyboard
 
 
@@ -67,7 +67,7 @@ def get_catalog_solo_callback():
         else:
             text = catalog.to_text()
         
-        await update.callback_query.edit_message_text(text, parse_mode="Markdown", reply_markup=get_catalog_back_keyboard(catalog_id, int(offset), int(limit)))
+        await update.callback_query.edit_message_text(text, parse_mode="Markdown", reply_markup=get_catalog_back_keyboard(catalog_id, int(offset), int(limit), return_to=update.callback_query.data))
 
     return CallbackQueryHandler(callback, pattern)
 

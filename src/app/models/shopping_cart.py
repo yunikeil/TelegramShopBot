@@ -12,8 +12,8 @@ from .catalog import Catalog
 class ShoppingCart(Base):
     __tablename__ = "shopping_cart"
 
-    catalog_id = Column(Integer, ForeignKey("catalog.id"), primary_key=True)
-    user_id = Column(Integer, ForeignKey("user.tg_id"), primary_key=True)
+    catalog_id = Column(Integer, ForeignKey("catalog.id", ondelete="CASCADE"), primary_key=True)
+    user_id = Column(Integer, ForeignKey("user.tg_id", ondelete="CASCADE"), primary_key=True)
     count = Column(Integer)
 
     catalog: Mapped["Catalog"] = relationship(lazy="selectin")
@@ -35,11 +35,11 @@ class ShoppingCart(Base):
             """
         )
 
-    def to_button(self, offset: int, limit: int):
+    def to_button(self, offset: int, limit: int, return_to: str = "main"):
         return [
             InlineKeyboardButton(
                 text=f"{self.catalog.name}; \n{self.catalog.description}",
-                callback_data=f"solo_shopping_cart:{self.catalog_id}:{offset}:{limit}",
+                callback_data=f"solo_shopping_cart:{self.catalog_id}:{offset}:{limit};{return_to}",
             )
         ]
 
