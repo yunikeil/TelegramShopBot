@@ -52,6 +52,6 @@ async def update_catalog(db_session: AsyncSession, catalog_id: int, name: Option
 async def delete_catalog(db_session: AsyncSession, catalog_id: int):
     catalog = await get_catalog_by_id(db_session, catalog_id)
     if catalog:
-        db_session.delete(catalog)
+        await db_session.delete(catalog)
         await db_session.commit()
     return catalog

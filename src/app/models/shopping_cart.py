@@ -12,8 +12,8 @@ from .catalog import Catalog
 class ShoppingCart(Base):
     __tablename__ = "shopping_cart"
 
-    catalog_id = Column(Integer, ForeignKey("catalog.id"), primary_key=True)
-    user_id = Column(Integer, ForeignKey("user.tg_id"), primary_key=True)
+    catalog_id = Column(Integer, ForeignKey("catalog.id", ondelete="CASCADE"), primary_key=True)
+    user_id = Column(Integer, ForeignKey("user.tg_id", ondelete="CASCADE"), primary_key=True)
     count = Column(Integer)
 
     catalog: Mapped["Catalog"] = relationship(lazy="selectin")

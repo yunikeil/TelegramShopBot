@@ -21,7 +21,7 @@ def get_array_global_fallbacks() -> tuple[
         await update.message.reply_text("Неизвестная команда...\ntry /stop")
         
     async def stop_command_fallback(update: Update, context: ContextTypes.DEFAULT_TYPE):
-        await update.message.reply_text("Выполнение сценария остановленно...")
+        await update.message.reply_text("Выполнение сценария остановленно...\ntry /main")
         return ConversationHandler.END
         
     async def message_fallback(update: Update, context: ContextTypes.DEFAULT_TYPE):
