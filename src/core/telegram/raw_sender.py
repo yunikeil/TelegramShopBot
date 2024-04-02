@@ -8,7 +8,7 @@ from core.logging.helpers import create_logger
 
 tg_logger = create_logger("telegram")
 
-# raw telegram send functions
+
 async def split_message(text: str, max_length: int = 4069):
     """Recursively split the message into chunks of no more than max_length characters."""
     if len(text) <= max_length:
@@ -38,12 +38,11 @@ async def send_telegram_message(
     target_url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
     headers = {"Content-Type": "application/json"}
 
-    # Split the message into chunks
     chunks = await split_message(text)
 
     for i, chunk in enumerate(chunks):
         inline_keyboard = None
-        if (i == len(chunks) - 1) and need_keyboard:  # Check if it's the last message
+        if (i == len(chunks) - 1) and need_keyboard:
             inline_keyboard = {
                 "inline_keyboard": [
                     [{"text": "Нажми меня", "url": "https://example.com"}]

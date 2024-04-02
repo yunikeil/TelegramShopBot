@@ -9,6 +9,7 @@ from app import bot_handlers
 
 tg_logger = create_logger("telegram")
 
+
 """
 Товар 1
 Ооооооооочень длинное описааание товара 1, но это не точно...
@@ -29,6 +30,7 @@ tg_logger = create_logger("telegram")
 Ооооооооочень длинное описааание товара 6, но это не точно...
 50
 """
+
 
 async def init_application(application: Application) -> None:
     await init_models()
