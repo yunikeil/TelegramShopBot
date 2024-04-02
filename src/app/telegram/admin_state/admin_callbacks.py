@@ -58,7 +58,6 @@ def get_update_catalogs_data_callback():
     pattern = r"^update_catalogs:.+:.+$"
 
     async def start_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
-        await update.callback_query.answer()
         catalogs_ids = context.user_data["catalogs_to_update"]
         if not catalogs_ids:
             await update.callback_query.edit_message_text("not catalogs there")
@@ -82,15 +81,21 @@ def get_update_catalogs_data_callback():
         )
     
     async def name_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
-        await update.callback_query.answer()
         catalog_id = update.callback_query.data.split(":")[2]
         context.user_data["now_update_filed"] = "name"
         context.user_data["current_catalog_id"] = catalog_id
         await update.callback_query.edit_message_text("Введите новоё имя...")
         return "update_calatogs_field"
+    
+    async def description_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        ...
+    
+    async def count__callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        ...
         
     async def base_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         update_type = update.callback_query.data.split(":")[1]
+        await update.callback_query.answer()
         match update_type:
             case "start":
                 to_return = await start_callback(update, context)
@@ -98,7 +103,6 @@ def get_update_catalogs_data_callback():
                 to_return = await name_callback(update, context)
             case _:
                 to_return = None
-                await update.callback_query.answer()
                 print(update_type)
         
         return to_return

@@ -2,7 +2,7 @@ from typing import Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from sqlalchemy import func
+from sqlalchemy import func, asc
 
 from app.models.catalog import Catalog
 
@@ -21,7 +21,7 @@ async def get_catalog_by_id(db_session: AsyncSession, catalog_id: int):
 
 
 async def get_all_catalogs(db_session: AsyncSession, offset: int = 0, limit: int = 10):
-    result = await db_session.execute(select(Catalog).offset(offset).limit(limit))
+    result = await db_session.execute(select(Catalog).order_by(Catalog.id).offset(offset).limit(limit))
     return result.scalars().all()
 
 
