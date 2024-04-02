@@ -1,5 +1,6 @@
 from typing import cast
 
+import telegram
 from telegram import Update
 from telegram.ext import CallbackQueryHandler, ContextTypes, ConversationHandler
 
@@ -23,7 +24,8 @@ def get_create_catalog_callback():
     async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         await update.callback_query.answer()
         await update.callback_query.edit_message_text(
-            text="Введите по три строки каталоги"
+            text="Введите данные по задданному паттерну:\n- Name\n- Description\n- Price\n- Count",
+            parse_mode="Markdown"
         )
 
         return "enter_create_catalogs_data"
@@ -88,7 +90,9 @@ def get_update_catalogs_data_callback():
         await update.callback_query.edit_message_text(
             text=text_to_send,
             parse_mode="Markdown",
-            reply_markup=get_next_update_catalogs_message_keyboard(catalog_id, is_finded=is_finded, is_last=len(catalogs_ids) == 0),
+            reply_markup=get_next_update_catalogs_message_keyboard(
+                catalog_id, is_finded=is_finded, is_last=len(catalogs_ids) == 0
+            ),
         )
     
     async def name_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -105,12 +109,26 @@ def get_update_catalogs_data_callback():
         await update.callback_query.edit_message_text("Введите новоё описание...")
         return "update_calatogs_field"
 
+    async def price_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        catalog_id = update.callback_query.data.split(":")[2]
+        context.user_data["now_update_filed"] = "price"
+        context.user_data["current_catalog_id"] = catalog_id
+        await update.callback_query.edit_message_text("Введите новую цену...")
+        return "update_calatogs_field"
+        
     async def count_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         catalog_id = update.callback_query.data.split(":")[2]
         context.user_data["now_update_filed"] = "count"
         context.user_data["current_catalog_id"] = catalog_id
         await update.callback_query.edit_message_text("Введите новоё количество...")
         return "update_calatogs_field"
+    
+    async def photo_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        catalog_id = update.callback_query.data.split(":")[2]
+        context.user_data["now_update_filed"] = "count"
+        context.user_data["current_catalog_id"] = catalog_id
+        await update.callback_query.edit_message_text("Прикрепите фотографию...\n/skip - для пропуска\n/clear - для удаления фото")
+        return "update_catalogs_photo"
 
     async def base_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         update_type = update.callback_query.data.split(":")[1]
@@ -122,8 +140,12 @@ def get_update_catalogs_data_callback():
                 to_return = await name_callback(update, context)
             case "description":
                 to_return = await description_callback(update, context)
+            case "price":
+                to_return = await price_callback(update, context)
             case "count":
                 to_return = await count_callback(update, context)
+            case "photo":
+                to_return = await photo_callback(update, context)
             case _:
                 to_return = None
                 print(update_type)

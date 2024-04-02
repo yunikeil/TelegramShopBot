@@ -1,6 +1,6 @@
 from inspect import cleandoc
 
-from sqlalchemy import Column, Integer, BigInteger, String, ForeignKey
+from sqlalchemy import CheckConstraint, Column, Integer, BigInteger, String, ForeignKey
 from sqlalchemy.orm import relationship, Mapped
 from telegram import InlineKeyboardButton
 
@@ -14,7 +14,7 @@ class ShoppingCart(Base):
 
     catalog_id = Column(Integer, ForeignKey("catalog.id", ondelete="CASCADE"), primary_key=True)
     user_id = Column(BigInteger, ForeignKey("user.tg_id", ondelete="CASCADE"), primary_key=True)
-    count = Column(Integer)
+    count = Column(Integer, CheckConstraint('count >= 1', name='check_count'), nullable=False)
 
     catalog: Mapped["Catalog"] = relationship(lazy="selectin")
     user: Mapped["User"] = relationship(

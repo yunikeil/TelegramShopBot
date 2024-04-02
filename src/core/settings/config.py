@@ -26,7 +26,3 @@ TG_TOKEN: str = os.getenv("TG_TOKEN")
 TG_LOG_TOKEN: str = os.getenv("TG_LOG_TOKEN")
 TG_INFO_LOG_CHANNEL: int = int(os.getenv("TG_INFO_LOG_CHANNEL"))
 TG_ERROR_LOG_CHANNEL: int = int(os.getenv("TG_ERROR_LOG_CHANNEL"))
-
-FILES_DELETE_MODE: str = os.getenv("FILES_DELETE_MODE")
-DATA_PATH: str = os.path.join(root_path, "data")
-DEFERRED_HOUR_TO_DELETE: int = int(os.getenv("DEFERRED_HOUR_TO_DELETE"))
