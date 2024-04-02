@@ -9,6 +9,7 @@ from app.services import (
     get_all_shopping_carts,
     get_shopping_cart_by_ids,
     delete_shopping_cart,
+    update_shopping_cart,
 )
 from app.models import ShoppingCart
 from .__addons import get_offset_limit_buttons, get_shopping_cart_back_keyboard
@@ -163,9 +164,57 @@ def get_shopping_cart_solo_callback():
 
     return CallbackQueryHandler(callback, pattern)
 
+def get_update_shopping_cart_count_mp_callback():
+    pattern = r"^count_shopping_cart:[0-9]+:.+$"
+    
+    async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        base_callback_data, return_callback_data = update.callback_query.data.split(";")
+        _, offset, limit, cart_id, action = base_callback_data.split(":")
+
+        async with get_session() as db_session:
+            card = await get_shopping_cart_by_ids(db_session, int(cart_id), update.callback_query.from_user.id)
+            
+            if not card:
+                await update.callback_query.answer("Нет товара в корзине")
+                return
+            
+            count = card.count + 1 if action == "plus" else card.count -1
+                        
+            new_card = await update_shopping_cart(db_session, int(cart_id), update.callback_query.from_user.id, count)
+            
+        await update.callback_query.answer()
+        await update.callback_query.edit_message_text(
+            text=new_card.to_text(),
+            parse_mode="Markdown",
+            reply_markup=get_shopping_cart_back_keyboard(cart_id, offset, limit, return_callback_data)
+        )
+
+        
+    return CallbackQueryHandler(callback, pattern)
+
+
+def get_update_shopping_cart_count_callback():
+    pattern = r"^update_shopping_cart:\d+:-?\d+:-?\d+;.+$"
+    
+    async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        await update.callback_query.answer()
+        base_callback_data, return_callback_data = update.callback_query.data.split(";")
+        _, offset, limit, cart_id = base_callback_data.split(":")
+
+        context.user_data["update_card_id"] = int(cart_id)
+        context.user_data["offset"] = offset
+        context.user_data["limit"] = limit
+        context.user_data["return_callback_data"] = return_callback_data
+        
+        await update.callback_query.edit_message_text("Введите новое количество...")
+        return "update_shopping_cart_count"
+        
+    return CallbackQueryHandler(callback, pattern)
+
 
 shopping_cart_callbacks = [
     get_add_to_shopping_cart_callback(),
     get_shopping_cart_callback(),
     get_shopping_cart_solo_callback(),
+    get_update_shopping_cart_count_mp_callback()
 ]

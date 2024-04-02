@@ -12,6 +12,7 @@ class Catalog(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String)
     description = Column(String)
+    price = Column(Integer)
     count = Column(Integer)
 
     def to_dict(self):

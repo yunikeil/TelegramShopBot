@@ -41,7 +41,12 @@ def get_offset_limit_buttons(
                 else f"shopping_cart:-1:-1:0;{return_to}",
             ),
         ],
-        [InlineKeyboardButton("Вернуться ↩️", callback_data=return_to)],
+        [
+            InlineKeyboardButton("Оформить заказ", callback_data=f"purchase_shopping_cart")
+        ],
+        [
+            InlineKeyboardButton("Вернуться ↩️", callback_data=return_to)
+        ],
     ]
 
 
@@ -53,13 +58,23 @@ def get_shopping_cart_back_keyboard(
             [
                 InlineKeyboardButton(
                     "Изменить количество",
-                    callback_data=f"update_shopping_cart:{cart_id}",
+                    callback_data=f"update_shopping_cart:{current_offset}:{current_limit}:{cart_id};{return_to}",
                 )
+            ],
+            [
+              InlineKeyboardButton(
+                    "-1",
+                    callback_data=f"count_shopping_cart:{current_offset}:{current_limit}:{cart_id}:minus;{return_to}"
+                ),
+              InlineKeyboardButton(
+                    "+1",
+                    callback_data=f"count_shopping_cart:{current_offset}:{current_limit}:{cart_id}:plus;{return_to}"
+                )  
             ],
             [
                 InlineKeyboardButton(
                     "Удалить из корзины",
-                    callback_data=f"delete_shopping_cart:{current_offset}:{current_limit}:{cart_id}",
+                    callback_data=f"delete_shopping_cart:{current_offset}:{current_limit}:{cart_id};{return_to}",
                 )
             ],
             [

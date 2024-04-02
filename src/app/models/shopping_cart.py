@@ -1,6 +1,6 @@
 from inspect import cleandoc
 
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, BigInteger, String, ForeignKey
 from sqlalchemy.orm import relationship, Mapped
 from telegram import InlineKeyboardButton
 
@@ -13,7 +13,7 @@ class ShoppingCart(Base):
     __tablename__ = "shopping_cart"
 
     catalog_id = Column(Integer, ForeignKey("catalog.id", ondelete="CASCADE"), primary_key=True)
-    user_id = Column(Integer, ForeignKey("user.tg_id", ondelete="CASCADE"), primary_key=True)
+    user_id = Column(BigInteger, ForeignKey("user.tg_id", ondelete="CASCADE"), primary_key=True)
     count = Column(Integer)
 
     catalog: Mapped["Catalog"] = relationship(lazy="selectin")
