@@ -23,7 +23,7 @@ async def create_purchase(
     product = choice(products)
     
     purchase = Purchase(
-        user_id=user_id,
+        tg_id=user_id,
         name=catalog.name,
         description=catalog.description,
         price=catalog.price,
@@ -47,13 +47,13 @@ async def get_purchase(db_session: AsyncSession, purchase_id: int):
 
 
 async def get_all_purchase(db_session: AsyncSession, user_id: int):
-    stmt = select(Purchase).where(Purchase.user_id == user_id)
+    stmt = select(Purchase).where(Purchase.tg_id == user_id)
     result = await db_session.execute(stmt)
     return result.scalars().all()
 
 
 async def get_purchase_count(db_session: AsyncSession, user_id: int):
-    stmt = select(func.count(Purchase.id)).where(Purchase.user_id == user_id)
+    stmt = select(func.count(Purchase.id)).where(Purchase.tg_id == user_id)
     result = await db_session.execute(stmt)
     return result.scalar()
 

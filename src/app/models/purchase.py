@@ -12,7 +12,7 @@ class Purchase(Base):
 
     id = Column(Integer, primary_key=True)
     
-    user_id = Column(BigInteger, ForeignKey("user.id", ondelete="CASCADE"))
+    tg_id = Column(BigInteger, ForeignKey("user.tg_id", ondelete="CASCADE"))
     name = Column(String, nullable=False, index=True)
     description = Column(String, nullable=False, index=True)
     price = Column(Integer, CheckConstraint('price >= 1', name='check_price'), nullable=False)
