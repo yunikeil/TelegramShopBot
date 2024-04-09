@@ -1,4 +1,4 @@
-from telegram import Update
+from telegram import Update, InputMedia
 from telegram.ext import CallbackQueryHandler, ContextTypes
 
 from core.settings import config
@@ -10,8 +10,9 @@ def get_about_us_callback():
 
     async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         await update.callback_query.answer()
-        await update.callback_query.edit_message_caption(
-            caption=about_us_text, reply_markup=about_us_inline_keyboard
+        await update.callback_query.edit_message_media(
+            media=InputMedia("photo", config.ABOUT_IMAGE_ID, caption=about_us_text),
+            reply_markup=about_us_inline_keyboard
         )
 
     return CallbackQueryHandler(callback, pattern)

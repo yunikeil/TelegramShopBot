@@ -1,10 +1,11 @@
 from typing import cast
 
 import telegram
-from telegram import Update
+from telegram import Update, InputMedia
 from telegram.ext import CallbackQueryHandler, ContextTypes, ConversationHandler
 
 from core.database import get_session
+from core.settings import config
 from app.services import get_catalog_by_id, delete_catalog
 from .__addons import (
     admin_text,
@@ -187,8 +188,9 @@ def get_back_to_admin_callback(need_only_callback: bool = False):
         if not check_is_user_admin(user_id):
             return to_return
 
-        await update.callback_query.edit_message_caption(
-            caption=admin_text.format(user_name=username), reply_markup=admin_keyboard
+        await update.callback_query.edit_message_media(
+            media=InputMedia("photo", config.ADMIN_IMAGE_ID, caption=admin_text.format(user_name=username)),
+            reply_markup=admin_keyboard
         )
         
         return to_return

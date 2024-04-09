@@ -1,7 +1,8 @@
-from telegram import Update
+from telegram import Update, InputMedia
 from telegram.ext import CallbackQueryHandler, ContextTypes
 
 from core.database import get_session
+from core.settings import config
 from app.services import get_user_by_tg_id
 from .__addons import about_me_keyboard_message
 
@@ -19,7 +20,9 @@ def get_personal_cabinet_callback():
         if not user:
             return
         
-        await query.edit_message_caption(caption=user.to_text(), parse_mode="Markdown", reply_markup=about_me_keyboard_message)
+        await query.edit_message_media(
+            media=InputMedia("photo", config.CABINET_IMAGE_ID, caption=user.to_text(), parse_mode="Markdown"),
+            reply_markup=about_me_keyboard_message)
     
     return CallbackQueryHandler(callback, pattern)
 

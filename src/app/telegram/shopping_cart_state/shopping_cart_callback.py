@@ -102,8 +102,8 @@ def get_shopping_cart_callback():
             text = "carts in bd carts in bd carts in bd"
 
         try:  # После можно будет перекинуть в общие хендлеры
-            await update.callback_query.edit_message_caption(
-                caption=text,
+            await update.callback_query.edit_message_media(
+                media=InputMedia("photo", config.CART_IMAGE_ID, caption=text, parse_mode="Markdown"),
                 reply_markup=InlineKeyboardMarkup(
                     [
                         *[
