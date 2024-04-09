@@ -1,4 +1,4 @@
-from telegram import Update
+from telegram import Update, InputMedia
 from telegram.ext import CallbackQueryHandler, ContextTypes
 
 from core.settings import config
@@ -13,8 +13,8 @@ def get_main_callback():
     async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         await update.callback_query.answer()
 
-        await update.callback_query.edit_message_caption(
-            caption=main_text,
+        await update.callback_query.edit_message_media(
+            media=InputMedia("photo", config.MAIN_IMAGE_ID, caption=main_text),
             reply_markup=get_main_keyboard(update.callback_query.from_user.id in config.ADMIN_IDS),
         )
 
