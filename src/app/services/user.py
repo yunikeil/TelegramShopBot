@@ -24,10 +24,11 @@ async def get_all_users(db_session: AsyncSession):
     return result.scalars().all()
 
 
-async def update_user(db_session: AsyncSession, tg_id: int, role: str):
+async def update_user(db_session: AsyncSession, tg_id: int, role: str, balance: int):
     user = await get_user_by_tg_id(db_session, tg_id)
     if user:
         user.role = role
+        user.balance = balance
         await db_session.commit()
         await db_session.refresh(user)
     return user

@@ -8,6 +8,7 @@ from .telegram.personal_cabinet_n_state import personal_cabinet_handlers
 
 from .telegram.admin_state import admin_handlers
 
+from .telegram.payment_n_state import payment_state_handlers
 
 bot_handlers = [
     *start_state_handlers,
@@ -17,4 +18,5 @@ bot_handlers = [
     *about_us_handlers,
     *personal_cabinet_handlers,
     *admin_handlers,
+    *payment_state_handlers,
 ]

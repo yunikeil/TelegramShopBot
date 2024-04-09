@@ -1,7 +1,7 @@
 import time
 from typing import TYPE_CHECKING
 
-from sqlalchemy import Column, Integer, BigInteger, Enum
+from sqlalchemy import CheckConstraint, Column, Integer, BigInteger, Enum
 from sqlalchemy.orm import relationship, Mapped
 
 from core.database import Base
@@ -16,6 +16,7 @@ class User(Base):
     
     tg_id = Column(BigInteger, primary_key=True)
     role = Column(Enum('user', 'admin', name="user_roles"), default="user", nullable=False)
+    balance = Column(Integer, CheckConstraint('balance >= 0', name='check_balance'), default=0, nullable=False)
     
     shopping_carts: Mapped[list["ShoppingCart"]] = relationship(
         back_populates="user", lazy="selectin"
