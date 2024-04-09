@@ -26,7 +26,7 @@ def get_enter_create_catalogs_message():
                     catalog_ids.append(catalog.id)
         
         context.user_data["catalog_create_need_photo"] = catalog_ids
-        await update.message.reply_text(f"added: {len(catalog_ids)} result(s), now add file, or use /skip")
+        await update.message.reply_photo(photo="AgACAgIAAxkBAAIF3GYUE504AAE1OD3RUPVpQhrNSfjNvwACH98xG89PoEggb-K0TwaieQEAAwIAA3kAAzQE" , caption=f"added: {len(catalog_ids)} result(s), now add file, or use /skip")
         return "create_catalogs_photo"
 
     return MessageHandler(pattern, callback)
@@ -45,8 +45,9 @@ def get_create_catalogs_photo():
                     db_session, catalog_id, file_id=file_id
                 )
         
-        await update.message.reply_text(
-            f"Файл добавлен к {len(catalog_ids)} каталогу(ам)!",
+        await update.message.reply_photo(
+            photo="AgACAgIAAxkBAAIF3GYUE504AAE1OD3RUPVpQhrNSfjNvwACH98xG89PoEggb-K0TwaieQEAAwIAA3kAAzQE",
+            caption=f"Файл добавлен к {len(catalog_ids)} каталогу(ам)!",
             reply_markup=after_get_create_catalog_message_keyboard
         )
         return ConversationHandler.END
@@ -58,8 +59,9 @@ def get_ckip_catalogs_photo():
     command = "skip"
     
     async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
-        await update.message.reply_text(
-            f"Файлы для офферов были пропущены!", 
+        await update.message.reply_photo(
+            photo="AgACAgIAAxkBAAIF3GYUE504AAE1OD3RUPVpQhrNSfjNvwACH98xG89PoEggb-K0TwaieQEAAwIAA3kAAzQE",
+            caption=f"Файлы для офферов были пропущены!", 
             reply_markup=after_get_create_catalog_message_keyboard
         )
         return ConversationHandler.END
@@ -76,7 +78,11 @@ def get_enter_update_catalogs_data_message():
         results.sort()
         context.user_data["catalogs_to_update"] = results
         
-        await update.message.reply_text(f"to_update queue: {len(results)} catalog(s)", reply_markup=start_update_catalogs_message_keyboard)
+        await update.message.reply_photo(
+            photo="AgACAgIAAxkBAAIF3GYUE504AAE1OD3RUPVpQhrNSfjNvwACH98xG89PoEggb-K0TwaieQEAAwIAA3kAAzQE",
+            caption=f"to_update queue: {len(results)} catalog(s)",
+            reply_markup=start_update_catalogs_message_keyboard
+        )
         return "update_catalogs_data"
     
     return MessageHandler(pattern, callback)
@@ -91,7 +97,11 @@ def get_update_calatogs_text_field_message():
         async with get_session() as db_session:
             new_catalog = await update_catalog(db_session, catalog_id, name=update.message.text)
         
-        await update.message.reply_text(f"Обновлено имя: {new_catalog.name}", reply_markup=get_back_to_catalogs_message_keyaboard(catalog_id))
+        await update.message.reply_photo(
+            photo="AgACAgIAAxkBAAIF3GYUE504AAE1OD3RUPVpQhrNSfjNvwACH98xG89PoEggb-K0TwaieQEAAwIAA3kAAzQE",
+            caption=f"Обновлено имя: {new_catalog.name}", 
+            reply_markup=get_back_to_catalogs_message_keyaboard(catalog_id)
+        )
     
     async def description_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         catalog_id = int(context.user_data["current_catalog_id"])
@@ -99,7 +109,11 @@ def get_update_calatogs_text_field_message():
         async with get_session() as db_session:
             new_catalog = await update_catalog(db_session, catalog_id, description=update.message.text)
         
-        await update.message.reply_text(f"Обновлено описание: {new_catalog.description}", reply_markup=get_back_to_catalogs_message_keyaboard(catalog_id))
+        await update.message.reply_photo(
+            photo="AgACAgIAAxkBAAIF3GYUE504AAE1OD3RUPVpQhrNSfjNvwACH98xG89PoEggb-K0TwaieQEAAwIAA3kAAzQE",
+            caption=f"Обновлено описание: {new_catalog.description}",
+            reply_markup=get_back_to_catalogs_message_keyaboard(catalog_id)
+        )
 
     async def price_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         catalog_id = int(context.user_data["current_catalog_id"])
@@ -107,7 +121,11 @@ def get_update_calatogs_text_field_message():
         async with get_session() as db_session:
             new_catalog = await update_catalog(db_session, catalog_id, price=update.message.text)
         
-        await update.message.reply_text(f"Обновлена цена: {new_catalog.price}", reply_markup=get_back_to_catalogs_message_keyaboard(catalog_id))
+        await update.message.reply_photo(
+            photo="AgACAgIAAxkBAAIF3GYUE504AAE1OD3RUPVpQhrNSfjNvwACH98xG89PoEggb-K0TwaieQEAAwIAA3kAAzQE",
+            caption=f"Обновлена цена: {new_catalog.price}",
+            reply_markup=get_back_to_catalogs_message_keyaboard(catalog_id)
+        )
     
     async def count_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         catalog_id = int(context.user_data["current_catalog_id"])
@@ -120,7 +138,11 @@ def get_update_calatogs_text_field_message():
         async with get_session() as db_session:
             new_catalog = await update_catalog(db_session, catalog_id, count=count)
 
-        await update.message.reply_text(f"Обновлено количество: {new_catalog.count}", reply_markup=get_back_to_catalogs_message_keyaboard(catalog_id))
+        await update.message.reply_photo(
+            photo="AgACAgIAAxkBAAIF3GYUE504AAE1OD3RUPVpQhrNSfjNvwACH98xG89PoEggb-K0TwaieQEAAwIAA3kAAzQE",
+            caption=f"Обновлено количество: {new_catalog.count}",
+            reply_markup=get_back_to_catalogs_message_keyaboard(catalog_id)
+        )
     
     async def base_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         attr_update = context.user_data["now_update_filed"]
@@ -153,8 +175,9 @@ def get_update_catalogs_photo_message():
                 db_session, catalog_id, file_id=file_id,
             )
         
-        await update.message.reply_text(
-            f"Файл для оффера был добавлен!", 
+        await update.message.reply_photo(
+            photo="AgACAgIAAxkBAAIF3GYUE504AAE1OD3RUPVpQhrNSfjNvwACH98xG89PoEggb-K0TwaieQEAAwIAA3kAAzQE",
+            caption=f"Файл для оффера был добавлен!", 
             reply_markup=get_back_to_catalogs_message_keyaboard(catalog_id)
         )
         
@@ -169,8 +192,9 @@ def get_skip_update_catalogs_photo_command():
     async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         catalog_id = int(context.user_data["current_catalog_id"])
 
-        await update.message.reply_text(
-            f"Файл для оффера был пропущен!", 
+        await update.message.reply_photo(
+            photo="AgACAgIAAxkBAAIF3GYUE504AAE1OD3RUPVpQhrNSfjNvwACH98xG89PoEggb-K0TwaieQEAAwIAA3kAAzQE",
+            caption=f"Файл для оффера был пропущен!", 
             reply_markup=get_back_to_catalogs_message_keyaboard(catalog_id)
         )
         
@@ -190,8 +214,9 @@ def get_clear_update_catalogs_photo_command():
                 db_session, catalog_id, file_id=None,
             )
         
-        await update.message.reply_text(
-            f"Файл для оффера был удалён!", 
+        await update.message.reply_photo(
+            photo="AgACAgIAAxkBAAIF3GYUE504AAE1OD3RUPVpQhrNSfjNvwACH98xG89PoEggb-K0TwaieQEAAwIAA3kAAzQE",
+            caption=f"Файл для оффера был удалён!", 
             reply_markup=get_back_to_catalogs_message_keyaboard(catalog_id)
         )
         
@@ -211,7 +236,11 @@ def get_enter_delete_catalogs_data_message():
             results.sort()
             context.user_data["catalogs_to_delete"] = results        
 
-        await update.message.reply_text(f"to_delete added: {len(results)} result(s)", reply_markup=enter_delete_catalogs_message_keyboard)
+        await update.message.reply_photo(
+            photo="AgACAgIAAxkBAAIF3GYUE504AAE1OD3RUPVpQhrNSfjNvwACH98xG89PoEggb-K0TwaieQEAAwIAA3kAAzQE",
+            caption=f"to_delete added: {len(results)} result(s)", 
+            reply_markup=enter_delete_catalogs_message_keyboard
+        )
         return "delete_catalogs_data"
 
     return MessageHandler(pattern, callback)

@@ -1,8 +1,9 @@
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update, InputMedia
 from telegram.ext import Application, CallbackQueryHandler, CommandHandler, ContextTypes
 import telegram
 
 from core.database import get_session
+from core.settings import config
 from app.services import (
     create_shopping_cart,
     get_shopping_cart_count,
@@ -99,8 +100,8 @@ def get_shopping_cart_callback():
             text = "carts in bd carts in bd carts in bd"
 
         try:  # После можно будет перекинуть в общие хендлеры
-            await update.callback_query.edit_message_text(
-                text=text,
+            await update.callback_query.edit_message_caption(
+                caption=text,
                 reply_markup=InlineKeyboardMarkup(
                     [
                         *[
@@ -154,9 +155,15 @@ def get_shopping_cart_solo_callback():
         else:
             text = cart.to_text()
 
-        await update.callback_query.edit_message_text(
-            text,
-            parse_mode="Markdown",
+        await update.callback_query.edit_message_media(
+            media=InputMedia(
+                media_type="photo",
+                media=cart.catalog.file_unique_tg_id
+                if cart.catalog.file_unique_tg_id
+                else config.DEFAULT_SOLO_CATALOG_IMAGE_ID,
+                caption=text,
+                parse_mode="Markdown",
+            ),
             reply_markup=get_shopping_cart_back_keyboard(
                 cart_id, int(offset), int(limit), return_to=return_callback_data
             ),
@@ -164,38 +171,50 @@ def get_shopping_cart_solo_callback():
 
     return CallbackQueryHandler(callback, pattern)
 
+
 def get_update_shopping_cart_count_mp_callback():
     pattern = r"^count_shopping_cart:[0-9]+:.+$"
-    
+
     async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         base_callback_data, return_callback_data = update.callback_query.data.split(";")
         _, offset, limit, cart_id, action = base_callback_data.split(":")
 
         async with get_session() as db_session:
-            card = await get_shopping_cart_by_ids(db_session, int(cart_id), update.callback_query.from_user.id)
-            
+            card = await get_shopping_cart_by_ids(
+                db_session, int(cart_id), update.callback_query.from_user.id
+            )
+
             if not card:
                 await update.callback_query.answer("Нет товара в корзине")
                 return
-            
-            count = card.count + 1 if action == "plus" else card.count -1
-                        
-            new_card = await update_shopping_cart(db_session, int(cart_id), update.callback_query.from_user.id, count)
-            
+
+            count = card.count + 1 if action == "plus" else card.count - 1
+
+            new_card = await update_shopping_cart(
+                db_session, int(cart_id), update.callback_query.from_user.id, count
+            )
+
         await update.callback_query.answer()
-        await update.callback_query.edit_message_text(
-            text=new_card.to_text(),
-            parse_mode="Markdown",
-            reply_markup=get_shopping_cart_back_keyboard(cart_id, offset, limit, return_callback_data)
+        await update.callback_query.edit_message_media(
+            media=InputMedia(
+                media_type="photo",
+                media=new_card.catalog.file_unique_tg_id
+                if new_card.catalog.file_unique_tg_id
+                else config.DEFAULT_SOLO_CATALOG_IMAGE_ID,
+                caption=new_card.to_text(),
+                parse_mode="Markdown",
+            ),
+            reply_markup=get_shopping_cart_back_keyboard(
+                cart_id, offset, limit, return_callback_data
+            ),
         )
 
-        
     return CallbackQueryHandler(callback, pattern)
 
 
 def get_update_shopping_cart_count_callback():
     pattern = r"^update_shopping_cart:\d+:-?\d+:-?\d+;.+$"
-    
+
     async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.callback_query.answer()
         base_callback_data, return_callback_data = update.callback_query.data.split(";")
@@ -205,10 +224,10 @@ def get_update_shopping_cart_count_callback():
         context.user_data["offset"] = offset
         context.user_data["limit"] = limit
         context.user_data["return_callback_data"] = return_callback_data
-        
-        await update.callback_query.edit_message_text("Введите новое количество...")
+
+        await update.callback_query.edit_message_caption("Введите новое количество...")
         return "update_shopping_cart_count"
-        
+
     return CallbackQueryHandler(callback, pattern)
 
 
@@ -216,5 +235,5 @@ shopping_cart_callbacks = [
     get_add_to_shopping_cart_callback(),
     get_shopping_cart_callback(),
     get_shopping_cart_solo_callback(),
-    get_update_shopping_cart_count_mp_callback()
+    get_update_shopping_cart_count_mp_callback(),
 ]

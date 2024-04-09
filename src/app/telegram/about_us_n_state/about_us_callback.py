@@ -10,7 +10,7 @@ def get_about_us_callback():
 
     async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         await update.callback_query.answer()
-        await update.callback_query.edit_message_text(
+        await update.callback_query.edit_message_caption(
             text=about_us_text, reply_markup=about_us_inline_keyboard
         )
 

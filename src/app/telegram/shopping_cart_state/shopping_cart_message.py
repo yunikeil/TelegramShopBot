@@ -4,6 +4,7 @@ from telegram import Update
 from telegram.ext import filters, ConversationHandler, CommandHandler, MessageHandler, ContextTypes
 
 from core.database import get_session
+from core.settings import config
 from app.services import update_shopping_cart
 from .__addons import get_shopping_cart_back_keyboard
 
@@ -21,7 +22,12 @@ def get_update_shopping_cart_count_message():
         async with get_session() as db_session:
             new_cart = await update_shopping_cart(db_session, card_id, update.message.from_user.id, count)
 
-        await update.message.reply_text(text=new_cart.to_text(), parse_mode="Markdown", reply_markup=get_shopping_cart_back_keyboard(card_id, offset, limit, return_data))
+        await update.message.reply_photo(
+            photo=new_cart.catalog.file_unique_tg_id if new_cart.catalog.file_unique_tg_id else config.DEFAULT_SOLO_CATALOG_IMAGE_ID,
+            caption=new_cart.to_text(), 
+            parse_mode="Markdown", 
+            reply_markup=get_shopping_cart_back_keyboard(card_id, offset, limit, return_data)
+        )
         return ConversationHandler.END
         
     return MessageHandler(pattern, callback)

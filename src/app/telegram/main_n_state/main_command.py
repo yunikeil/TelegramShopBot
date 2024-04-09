@@ -9,8 +9,9 @@ def get_main_command():
     names = ["main"]
 
     async def command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:      
-        await update.message.reply_text(
-            text=main_text,
+        await update.message.reply_photo(
+            photo=config.MAIN_IMAGE_ID,
+            caption=main_text,
             reply_markup=get_main_keyboard(update.message.from_user.id in config.ADMIN_IDS),
         )
 

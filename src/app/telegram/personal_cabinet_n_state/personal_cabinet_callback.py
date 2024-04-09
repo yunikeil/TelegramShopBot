@@ -13,7 +13,7 @@ def get_personal_cabinet_callback():
         # Some clients may have trouble otherwise. See https://core.telegram.org/bots/api#callbackquery
         await query.answer()
 
-        await query.edit_message_text(text=f"Selected option: {query.data}")
+        await query.edit_message_caption(text=f"Selected option: {query.data}")
     
     return CallbackQueryHandler(callback, pattern)
 
