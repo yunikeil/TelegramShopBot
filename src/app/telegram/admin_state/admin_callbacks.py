@@ -18,6 +18,21 @@ from .__addons import (
 
 
 # Ниже обработчики из главной admin панели
+def get_photo_id_callback():
+    pattern = "^get_photo_id$"
+    
+    async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+        await update.callback_query.answer()
+        await update.callback_query.edit_message_caption(
+            caption="Загрузите фото для получения id",
+            parse_mode="Markdown"
+        )
+
+        return "get_photo_id_load_photo"
+
+    return CallbackQueryHandler(callback, pattern)
+
+
 def get_create_catalog_callback():
     pattern = "^create_catalog$"
 

@@ -21,6 +21,9 @@ admin_keyboard = InlineKeyboardMarkup(
             InlineKeyboardButton("Удалить товаров", callback_data="delete_catalog"),
         ],
         [
+            InlineKeyboardButton("Получить id photo", callback_data="get_photo_id")
+        ],
+        [
             InlineKeyboardButton("Вернуться ↩️", callback_data="main"),
         ],
 
@@ -32,6 +35,17 @@ after_get_create_catalog_message_keyboard = InlineKeyboardMarkup(
     [
         [
             InlineKeyboardButton("Добавить ещё товар", callback_data="create_catalog"),
+        ],
+        [
+            InlineKeyboardButton("В админ панель ↩️", callback_data="admin"),
+        ],
+    ]
+)
+
+after_get_photo_id_message_keyboard = InlineKeyboardMarkup(
+    [
+        [
+            InlineKeyboardButton("Получить ещё фото", callback_data="get_photo_id"),
         ],
         [
             InlineKeyboardButton("В админ панель ↩️", callback_data="admin"),

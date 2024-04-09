@@ -5,7 +5,25 @@ from telegram.ext import filters, ConversationHandler, CommandHandler, MessageHa
 
 from core.database import get_session
 from app.services import create_catalog, update_catalog
-from .__addons import after_get_create_catalog_message_keyboard, start_update_catalogs_message_keyboard, enter_delete_catalogs_message_keyboard, get_back_to_catalogs_message_keyaboard
+from .__addons import after_get_create_catalog_message_keyboard, start_update_catalogs_message_keyboard, enter_delete_catalogs_message_keyboard, after_get_photo_id_message_keyboard, get_back_to_catalogs_message_keyaboard
+
+
+def get_photo_id_message():
+    pattern = filters.PHOTO
+    
+    async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        file_id = update.message.photo[-1].file_id
+                        
+        await update.message.reply_photo(
+            photo=file_id,
+            caption=f"file\_id: `{file_id}`",
+            parse_mode="Markdown",
+            reply_markup=after_get_photo_id_message_keyboard
+        )
+        
+        return ConversationHandler.END
+    
+    return MessageHandler(pattern, callback)
 
 
 def get_enter_create_catalogs_message():
