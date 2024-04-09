@@ -20,6 +20,10 @@ def get_create_payment_summ_message():
         currency = "RUB"
         price = int(update.message.text)
         prices = [LabeledPrice("Тестовое пополнение", price * 100)]
+        
+        if price < 10 or price > 100000:
+            await update.message.reply_text("Неверная сумма пополнеия 10 <= summ <= 100000")
+            return
 
         await context.bot.send_invoice(
             chat_id, title, description, payload, TEST_PAYMENT_PROVIDER_TOKEN, currency, prices
