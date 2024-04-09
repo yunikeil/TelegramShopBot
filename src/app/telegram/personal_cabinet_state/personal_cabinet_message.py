@@ -22,7 +22,7 @@ def get_create_payment_summ_message():
         prices = [LabeledPrice("Тестовое пополнение", price * 100)]
         
         if price < 10 or price > 100000:
-            await update.message.reply_text("Неверная сумма пополнеия 10 <= summ <= 100000")
+            await update.message.reply_text("Неверная сумма пополнеия 10 <= summ <= 100_000")
             return
 
         await context.bot.send_invoice(
