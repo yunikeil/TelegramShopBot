@@ -16,7 +16,7 @@ class Purchase(Base):
     name = Column(String, nullable=False, index=True)
     description = Column(String, nullable=False, index=True)
     price = Column(Integer, CheckConstraint('price >= 1', name='check_price'), nullable=False)
-    count = Column(Integer, CheckConstraint('count >= 0', name='check_count'), nullable=False)
+    count = Column(Integer, CheckConstraint('count >= 0', name='check_count'), default=1, nullable=False)
     file_unique_tg_id = Column(String, default=None, nullable=True)
     value = Column(String, nullable=False)
     

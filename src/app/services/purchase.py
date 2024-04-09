@@ -11,7 +11,7 @@ from app.services.product import get_all_catalog_products
 
 
 async def create_purchase(
-    db_session: AsyncSession, user_id: int, catalog_id: int, product_id: str
+    db_session: AsyncSession, user_id: int, catalog_id: int,
 ):
     catalog = await get_catalog_by_id(db_session, catalog_id)
     if not catalog:
@@ -27,7 +27,6 @@ async def create_purchase(
         name=catalog.name,
         description=catalog.description,
         price=catalog.price,
-        count=catalog.count,
         file_unique_tg_id=catalog.file_unique_tg_id,
         value=product.value,
     )

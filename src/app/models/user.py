@@ -1,4 +1,4 @@
-import time
+from inspect import cleandoc
 from typing import TYPE_CHECKING
 
 from sqlalchemy import CheckConstraint, Column, Integer, BigInteger, Enum
@@ -22,6 +22,25 @@ class User(Base):
         back_populates="user", lazy="selectin"
     )
     purchases: Mapped[list["Purchase"]] = relationship(lazy="selectin")
+    
+    def get_amount_purhases(self):
+        result = 0
+        for purhase in self.purchases:
+            result += purhase.count * purhase.price
+        
+        return result
+    
+    def to_text(self):
+        return cleandoc(
+            f"""
+            *id* - `{self.tg_id}`;
+            *role* - `{self.role}`;
+            *balance* - `{self.balance / 100}`;
+            *ammount_purchases* - `{self.get_amount_purhases() / 100}`;
+            *len_carts* - `{len(self.shopping_carts)}`;
+            *len_purhases* - `{len(self.purchases)}`;
+            """
+        )
     
     def is_admin(self):
         return self.role == "admin"
