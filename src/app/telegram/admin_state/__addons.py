@@ -21,6 +21,9 @@ admin_keyboard = InlineKeyboardMarkup(
             InlineKeyboardButton("Удалить товаров", callback_data="delete_catalog"),
         ],
         [
+            InlineKeyboardButton("Получить id photo", callback_data="get_photo_id")
+        ],
+        [
             InlineKeyboardButton("Вернуться ↩️", callback_data="main"),
         ],
 
@@ -32,6 +35,17 @@ after_get_create_catalog_message_keyboard = InlineKeyboardMarkup(
     [
         [
             InlineKeyboardButton("Добавить ещё товар", callback_data="create_catalog"),
+        ],
+        [
+            InlineKeyboardButton("В админ панель ↩️", callback_data="admin"),
+        ],
+    ]
+)
+
+after_get_photo_id_message_keyboard = InlineKeyboardMarkup(
+    [
+        [
+            InlineKeyboardButton("Получить ещё фото", callback_data="get_photo_id"),
         ],
         [
             InlineKeyboardButton("В админ панель ↩️", callback_data="admin"),
@@ -61,22 +75,25 @@ back_to_admin_message_keyboard = InlineKeyboardMarkup(
 def get_next_update_catalogs_message_keyboard(category_id: int, is_finded: bool = True, is_last: bool = False):
     update_name_button = InlineKeyboardButton("Обновить имя товара", callback_data=f"update_catalogs:name:{category_id}:pass")
     update_description_button = InlineKeyboardButton("Обновить описание товара", callback_data=f"update_catalogs:description:{category_id}:pass")
-    update_image_button = InlineKeyboardButton("Обновить картинку товара", callback_data=f"update_catalogs:image:{category_id}:pass")
-    update_count_button = InlineKeyboardButton("Обновить количество товаров", callback_data=f"update_catalogs:count:{category_id}:pass")
+    update_price_button = InlineKeyboardButton("Обновить стоимость товара", callback_data=f"update_catalogs:price:{category_id}:pass")
+    update_count_button = InlineKeyboardButton("Изменить автовыдачу", callback_data=f"update_catalogs:count:{category_id}:pass")
+    update_image_button = InlineKeyboardButton("Обновить картинку товара", callback_data=f"update_catalogs:photo:{category_id}:pass")
+    
     
     buttons = []
     if is_finded:
         buttons.extend([
             [update_name_button],
             [update_description_button],
+            [update_price_button],
+            [update_count_button],
             [update_image_button],
-            [update_count_button]
         ])
     
     if not is_last:
         buttons.append([InlineKeyboardButton("Перейти дальше", callback_data="update_catalogs:start:pass")])
     else:
-        buttons.append([InlineKeyboardButton("Обновить ещё товар", callback_data="update_catalog"),])
+        buttons.append([InlineKeyboardButton("Обновить другие товары", callback_data="update_catalog"),])
         
     buttons.append([InlineKeyboardButton("В админ панель ↩️", callback_data="admin_back")])
     

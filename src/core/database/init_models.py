@@ -4,11 +4,10 @@ from sqlalchemy.ext.asyncio import create_async_engine
 
 from core.database import Base
 import core.settings.config as conf
-from core.database.listener import PostgreListener
+
 
 logger = logging.getLogger("telegram")
 engine = create_async_engine(conf.DATABASE_URL, echo=conf.ECHO_SQL)
-event_listener = PostgreListener()
 
 
 async def init_models():

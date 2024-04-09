@@ -7,8 +7,14 @@ from sqlalchemy import func, asc
 from app.models.catalog import Catalog
 
 
-async def create_catalog(db_session: AsyncSession, name: str, description: str, count: int):
-    catalog = Catalog(name=name, description=description, count=count)
+async def create_catalog(
+    db_session: AsyncSession,
+    name: str,
+    description: str,
+    price: int,
+    file_id: str | None = None,
+):
+    catalog = Catalog(name=name, description=description, price=price)
     db_session.add(catalog)
     await db_session.commit()
     await db_session.refresh(catalog)
@@ -21,7 +27,9 @@ async def get_catalog_by_id(db_session: AsyncSession, catalog_id: int):
 
 
 async def get_all_catalogs(db_session: AsyncSession, offset: int = 0, limit: int = 10):
-    result = await db_session.execute(select(Catalog).order_by(Catalog.id).offset(offset).limit(limit))
+    result = await db_session.execute(
+        select(Catalog).order_by(Catalog.id).offset(offset).limit(limit)
+    )
     return result.scalars().all()
 
 
@@ -30,22 +38,30 @@ async def get_catalogs_count(db_session: AsyncSession):
     return result.scalar()
 
 
-async def update_catalog(db_session: AsyncSession, catalog_id: int, name: Optional[str] = None, description: Optional[str] = None, count: Optional[int] = None) -> Optional[Catalog]:
+async def update_catalog(
+    db_session: AsyncSession,
+    catalog_id: int,
+    name: Optional[str] = None,
+    description: Optional[str] = None,
+    price: Optional[int] = None,
+    file_id: Optional[int] = None,
+) -> Optional[Catalog]:
     catalog = await get_catalog_by_id(db_session, catalog_id)
     if catalog:
         updates = {
-            'name': name,
-            'description': description,
-            'count': count
+            "name": name,
+            "description": description,
+            "price": price,
+            "file_unique_tg_id": file_id,
         }
-        
+
         for attr, value in updates.items():
             if value is not None:
                 setattr(catalog, attr, value)
-        
+
         await db_session.commit()
         await db_session.refresh(catalog)
-        
+
     return catalog
 
 

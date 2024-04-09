@@ -8,6 +8,7 @@ from telegram.ext import (
     ContextTypes,
 )
 
+from core.settings import config
 
 def get_array_global_fallbacks() -> tuple[
     CommandHandler, CommandHandler, MessageHandler, CallbackQueryHandler
@@ -18,18 +19,18 @@ def get_array_global_fallbacks() -> tuple[
     pattern = '^.*$'
     
     async def any_command_fallback(update: Update, context: ContextTypes.DEFAULT_TYPE):
-        await update.message.reply_text("Неизвестная команда...\ntry /stop")
+        await update.message.reply_photo(config.DEFAULT_SOLO_CATALOG_IMAGE_ID, "Неизвестная команда...\ntry /stop")
         
     async def stop_command_fallback(update: Update, context: ContextTypes.DEFAULT_TYPE):
-        await update.message.reply_text("Выполнение сценария остановленно...\ntry /main")
+        await update.message.reply_photo(config.DEFAULT_SOLO_CATALOG_IMAGE_ID, "Выполнение сценария остановленно...\ntry /main")
         return ConversationHandler.END
         
     async def message_fallback(update: Update, context: ContextTypes.DEFAULT_TYPE):
-        await update.message.reply_text("Неизвестный текстовый формат...\ntry /stop")
+        await update.message.reply_photo(config.DEFAULT_SOLO_CATALOG_IMAGE_ID, "Неизвестный текстовый формат...\ntry /stop")
     
     async def callback_fallback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.callback_query.answer()
-        await update.callback_query.edit_message_text("Неизвестное нажатие кнопки...\ntry /stop")
+        await update.callback_query.edit_message_caption("Неизвестное нажатие кнопки...\ntry /stop")
         
 
     return (

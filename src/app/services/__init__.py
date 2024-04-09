@@ -21,3 +21,16 @@ from .user import (
     update_user,
     delete_user,
 )
+from .product import (
+    create_product,
+    get_product,
+    get_all_catalog_products,
+    update_product,
+    delete_product
+)
+from .purchase import(
+    create_purchase,
+    get_purchase,
+    get_all_purchase,
+    get_purchase_count,
+)
