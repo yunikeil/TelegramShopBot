@@ -9,6 +9,7 @@ from app.models.purchase import Purchase
 from app.services.catalog import get_catalog_by_id
 from app.services.product import get_all_catalog_products
 
+
 async def create_purchase(
     db_session: AsyncSession, user_id: int, catalog_id: int, product_id: str
 ):
