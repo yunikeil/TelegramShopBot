@@ -1,6 +1,7 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update, InputMedia
 from telegram.ext import Application, CallbackQueryHandler, CommandHandler, ContextTypes
 import telegram
+import sqlalchemy
 
 from core.database import get_session
 from core.settings import config
@@ -11,6 +12,7 @@ from app.services import (
     get_shopping_cart_by_ids,
     delete_shopping_cart,
     update_shopping_cart,
+    get_catalog_by_id,
 )
 from app.models import ShoppingCart
 from .__addons import get_offset_limit_buttons, get_shopping_cart_back_keyboard
@@ -183,16 +185,22 @@ def get_update_shopping_cart_count_mp_callback():
             card = await get_shopping_cart_by_ids(
                 db_session, int(cart_id), update.callback_query.from_user.id
             )
-
             if not card:
                 await update.callback_query.answer("Нет товара в корзине")
                 return
 
             count = card.count + 1 if action == "plus" else card.count - 1
+            if count > len(card.catalog.products):
+                await update.callback_query.answer("Нельзя выбрать больше, чем имеется.")
+                return
 
-            new_card = await update_shopping_cart(
-                db_session, int(cart_id), update.callback_query.from_user.id, count
-            )
+            try:
+                new_card = await update_shopping_cart(
+                    db_session, int(cart_id), update.callback_query.from_user.id, count
+                )
+            except sqlalchemy.exc.IntegrityError:
+                await update.callback_query.answer("Неверное количество...")
+                return
 
         await update.callback_query.answer()
         await update.callback_query.edit_message_media(
