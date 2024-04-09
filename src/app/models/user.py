@@ -8,6 +8,7 @@ from core.database import Base
 
 if TYPE_CHECKING:
     from .shopping_cart import ShoppingCart
+    from .purchase import Purchase
 
 
 class User(Base):
@@ -19,6 +20,7 @@ class User(Base):
     shopping_carts: Mapped[list["ShoppingCart"]] = relationship(
         back_populates="user", lazy="selectin"
     )
+    purchases: Mapped[list["Purchase"]] = relationship(lazy="selectin")
     
     def is_admin(self):
         return self.role == "admin"
