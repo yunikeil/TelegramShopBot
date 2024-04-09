@@ -1,9 +1,11 @@
 from inspect import cleandoc
 
 from sqlalchemy import CheckConstraint, Column, Integer, String, ForeignKey
+from sqlalchemy.orm import Mapped, relationship
 from telegram import InlineKeyboardButton
 
 from core.database import Base
+from .product import Product
 
 
 class Catalog(Base):
@@ -13,9 +15,10 @@ class Catalog(Base):
     name = Column(String, nullable=False, index=True)
     description = Column(String, nullable=False, index=True)
     price = Column(Integer, CheckConstraint('price >= 1', name='check_price'), nullable=False)
-    count = Column(Integer, CheckConstraint('count >= 0', name='check_count'), nullable=False)
     file_unique_tg_id = Column(String, default=None, nullable=True)
 
+    products: Mapped[list["Product"]] = relationship(lazy="selectin")
+    
     def to_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
@@ -25,7 +28,8 @@ class Catalog(Base):
             *Позиция* - `{self.id}`;
             *Имя* - `{self.name}`;
             *Описание* - `{self.description}`;
-            *Колиечство* - `{self.count}`.
+            *Цена* - `{self.price}`;
+            *Колиечство* - `{len(self.products)}`;
             """
         )
 

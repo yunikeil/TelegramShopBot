@@ -12,10 +12,9 @@ async def create_catalog(
     name: str,
     description: str,
     price: int,
-    count: int,
     file_id: str | None = None,
 ):
-    catalog = Catalog(name=name, description=description, price=price, count=count)
+    catalog = Catalog(name=name, description=description, price=price)
     db_session.add(catalog)
     await db_session.commit()
     await db_session.refresh(catalog)
@@ -45,7 +44,6 @@ async def update_catalog(
     name: Optional[str] = None,
     description: Optional[str] = None,
     price: Optional[int] = None,
-    count: Optional[int] = None,
     file_id: Optional[int] = None,
 ) -> Optional[Catalog]:
     catalog = await get_catalog_by_id(db_session, catalog_id)
@@ -54,7 +52,6 @@ async def update_catalog(
             "name": name,
             "description": description,
             "price": price,
-            "count": count,
             "file_unique_tg_id": file_id,
         }
 

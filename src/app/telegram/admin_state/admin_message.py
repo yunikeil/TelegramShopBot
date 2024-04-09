@@ -4,7 +4,7 @@ from telegram import Update
 from telegram.ext import filters, ConversationHandler, CommandHandler, MessageHandler, ContextTypes
 
 from core.database import get_session
-from app.services import create_catalog, update_catalog
+from app.services import create_catalog, update_catalog, create_product
 from .__addons import after_get_create_catalog_message_keyboard, start_update_catalogs_message_keyboard, enter_delete_catalogs_message_keyboard, after_get_photo_id_message_keyboard, get_back_to_catalogs_message_keyaboard
 
 
@@ -27,19 +27,19 @@ def get_photo_id_message():
 
 
 def get_enter_create_catalogs_message():
-    pattern = filters.TEXT and filters.Regex(r".+\n.+\n[0-9]+\n[0-9]+")
+    pattern = filters.TEXT and filters.Regex(r".+\n.+\n[0-9]+")
 
     async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         user_message = update.message.text
         results: list[str] = []
         catalog_ids: list[int] = []
         
-        if results := re.findall(r".+\n.+\n[0-9]+\n[0-9]+", user_message):
+        if results := re.findall(r".+\n.+\n[0-9]+", user_message):
             async with get_session() as db_session:
                 for result in results:
                     result = result.split("\n")
                     catalog = await create_catalog(
-                        db_session, result[0], result[1], int(result[2]), int(result[3])
+                        db_session, result[0], result[1], int(result[2]),
                     )
                     catalog_ids.append(catalog.id)
         
@@ -107,7 +107,7 @@ def get_enter_update_catalogs_data_message():
 
 
 def get_update_calatogs_text_field_message():
-    pattern = filters.TEXT and filters.Regex(r"^(?!\/).+$")
+    pattern = filters.TEXT and filters.Regex(r"^(?!\/).+")
 
     async def name_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         catalog_id = int(context.user_data["current_catalog_id"])
@@ -147,18 +147,15 @@ def get_update_calatogs_text_field_message():
     
     async def count_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         catalog_id = int(context.user_data["current_catalog_id"])
-        
-        if update.message.text.isdigit():
-            count = int(update.message.text)
-        else:
-            count = None
+        results = []
         
         async with get_session() as db_session:
-            new_catalog = await update_catalog(db_session, catalog_id, count=count)
-
+            for product in update.message.text.splitlines():
+                results.append(await create_product(db_session, catalog_id, product))
+            
         await update.message.reply_photo(
             photo="AgACAgIAAxkBAAIF3GYUE504AAE1OD3RUPVpQhrNSfjNvwACH98xG89PoEggb-K0TwaieQEAAwIAA3kAAzQE",
-            caption=f"Обновлено количество: {new_catalog.count}",
+            caption=f"Добавлена автовыдача: {len(results)}",
             reply_markup=get_back_to_catalogs_message_keyaboard(catalog_id)
         )
     

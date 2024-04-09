@@ -31,7 +31,7 @@ class ShoppingCart(Base):
             *Имя позиции* - `{self.catalog.name}`;
             *Описание позиции* - `{self.catalog.description}`;
             *Количество в корзине* - `{self.count}`;
-            *Всего доступно* - `{self.catalog.count}`;
+            *Всего доступно* - `{len(self.catalog.products)}`;
             """
         )
 

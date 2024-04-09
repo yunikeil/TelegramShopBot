@@ -39,7 +39,7 @@ def get_create_catalog_callback():
     async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         await update.callback_query.answer()
         await update.callback_query.edit_message_caption(
-            caption="Введите данные по задданному паттерну:\n- Name\n- Description\n- Price\n- Count",
+            caption="Введите данные по задданному паттерну:\n- Name\n- Description\n- Price",
             parse_mode="Markdown"
         )
 
@@ -135,12 +135,12 @@ def get_update_catalogs_data_callback():
         catalog_id = update.callback_query.data.split(":")[2]
         context.user_data["now_update_filed"] = "count"
         context.user_data["current_catalog_id"] = catalog_id
-        await update.callback_query.edit_message_caption("Введите новоё количество...")
+        await update.callback_query.edit_message_caption("Введите автовыдачу (1 строка - 1 товар)")
         return "update_calatogs_field"
     
     async def photo_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         catalog_id = update.callback_query.data.split(":")[2]
-        context.user_data["now_update_filed"] = "count"
+        context.user_data["now_update_filed"] = "photo"
         context.user_data["current_catalog_id"] = catalog_id
         await update.callback_query.edit_message_caption("Прикрепите фотографию...\n/skip - для пропуска\n/clear - для удаления фото")
         return "update_catalogs_photo"
@@ -222,9 +222,9 @@ def get_delete_catalogs_data_callback():
             catalog_to_delete = await get_catalog_by_id(db_session, catalog_id)
         
         if not catalog_to_delete:
-            await update.callback_query.edit_message_caption(text=f"Нет оффера с id {catalog_id}", reply_markup=get_delete_catalogs_data_message_keyboard(True))
+            await update.callback_query.edit_message_caption(caption=f"Нет оффера с id {catalog_id}", reply_markup=get_delete_catalogs_data_message_keyboard(True))
         else:
-            await update.callback_query.edit_message_caption(text=f"*Выставлено на удаление:*\n{catalog_to_delete.to_text()}\n*Осталось удалить:* {len(catalogs_to_delete_ids)}", parse_mode="Markdown", reply_markup=get_delete_catalogs_data_message_keyboard())
+            await update.callback_query.edit_message_caption(caption=f"*Выставлено на удаление:*\n{catalog_to_delete.to_text()}\n*Осталось удалить:* {len(catalogs_to_delete_ids)}", parse_mode="Markdown", reply_markup=get_delete_catalogs_data_message_keyboard())
 
     async def delete_all_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         catalogs_to_delete_ids = context.user_data["catalogs_to_delete"]

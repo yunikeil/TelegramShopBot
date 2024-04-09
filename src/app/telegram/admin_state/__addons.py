@@ -76,8 +76,9 @@ def get_next_update_catalogs_message_keyboard(category_id: int, is_finded: bool 
     update_name_button = InlineKeyboardButton("Обновить имя товара", callback_data=f"update_catalogs:name:{category_id}:pass")
     update_description_button = InlineKeyboardButton("Обновить описание товара", callback_data=f"update_catalogs:description:{category_id}:pass")
     update_price_button = InlineKeyboardButton("Обновить стоимость товара", callback_data=f"update_catalogs:price:{category_id}:pass")
-    update_count_button = InlineKeyboardButton("Обновить количество товаров", callback_data=f"update_catalogs:count:{category_id}:pass")
+    update_count_button = InlineKeyboardButton("Изменить автовыдачу", callback_data=f"update_catalogs:count:{category_id}:pass")
     update_image_button = InlineKeyboardButton("Обновить картинку товара", callback_data=f"update_catalogs:photo:{category_id}:pass")
+    
     
     buttons = []
     if is_finded:
