@@ -1,0 +1,1 @@
+from .minio_client import client as s3client

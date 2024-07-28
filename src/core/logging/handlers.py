@@ -35,7 +35,7 @@ class CoreHandler(logging.Handler):
 
     async def process_error(self, record: logging.LogRecord):
         pass
-    
+
     async def process_critical(self, record: logging.LogRecord):
         pass
 
@@ -46,24 +46,26 @@ class CoreHandler(logging.Handler):
         asyncio.create_task(self.levelnoms[record.levelno](record))
 
 
-class InfoHandlerTG(CoreHandler):
+class WarnHandlerTG(CoreHandler):
     async def process_info(self, record: logging.LogRecord):
         message = f"`{record.levelname} - {record.message}`"
         await send_telegram_message(
-            config.TG_LOG_TOKEN, config.TG_INFO_LOG_CHANNEL, message, need_keyboard=False
+            config.TG_LOG_TOKEN,
+            config.TG_LOG_CHANNEL,
+            message,
+            need_keyboard=False,
         )
 
 
 class ErrorHandlerTG(CoreHandler):
     async def process_error(self, record: logging.LogRecord):
-        exc_info = record.exc_info
-        if exc_info:
-            exc_type, exc_value, exc_traceback = exc_info
-            tb_str = "".join(
-                traceback.format_exception(exc_type, exc_value, exc_traceback)
-            )
-        else:
-            tb_str = ""
+        tb_str = (
+            "".join(traceback.format_exception(*record.exc_info))
+            if record.exc_info
+            else ""
+        )
 
         message = f"`{record.levelname}\t{record.message}`\n```shell\n{tb_str}\n```"
-        await send_telegram_message(config.TG_LOG_TOKEN, config.TG_ERROR_LOG_CHANNEL, message)
+        await send_telegram_message(
+            config.TG_LOG_TOKEN, config.TG_LOG_CHANNEL, message
+        )

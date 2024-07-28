@@ -1,0 +1,119 @@
+
+x-nginx-tgshop: &base-nginx
+  image: nginx:alpine
+  restart: always
+  networks:
+    - shopbot-network
+  depends_on:
+    - pgadmin-tgshop
+    - minio-tgshop
+  entrypoint: ["/nginx_entrypoint.sh"]
+  command: ["nginx", "-g", "daemon off;"]
+
+services:
+  app-tgshop:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - shopbot-network
+    depends_on:
+      db-tgshop:
+        condition: service_healthy
+    command:
+      - "sh"
+      - "-c"
+      - |
+        alembic upgrade head
+        python3 src/main.py
+    profiles: 
+      - base
+
+  db-tgshop:
+    image: postgres:16.3-alpine3.20
+    environment:
+      - POSTGRES_USER=${DATABASE_USERNAME}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_DB=${DATABASE_NAME}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - shopbot-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    profiles: 
+      - base
+
+  pgadmin-tgshop:
+    image: dpage/pgadmin4:latest
+    restart: unless-stopped
+    ports:
+      - ${INTERNAL_IP}:81:80
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    depends_on:
+      - db-tgshop
+    networks:
+      - shopbot-network
+    profiles: 
+      - base
+
+  minio-tgshop:
+    image: docker.io/bitnami/minio:2022
+    ports:
+      - ${INTERNAL_IP}:91:9001
+    networks:
+      - shopbot-network
+    volumes:
+      - minio-data:/bitnami/minio
+      - minio-data:/data
+      - minio-data:/certs
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+      - MINIO_DEFAULT_BUCKETS=${MINIO_DEFAULT_BUCKETS}
+    profiles: 
+      - base
+    
+  nginx_ports-tgshop:
+    <<: *base-nginx
+    profiles:
+      - with_port
+    ports:
+      - ${EXTERNAL_IP}:81:81
+      - ${EXTERNAL_IP}:91:91
+    volumes:
+      - ./config/nginx.ports.conf:/etc/nginx/nginx.conf.template
+      - ./scripts/nginx_entrypoint.sh:/nginx_entrypoint.sh
+    environment:
+      - BASE_DOMAIN=${BASE_DOMAIN}
+
+
+  nginx_subdomains-tgshop:
+    <<: *base-nginx
+    profiles: 
+      - with_domain
+    ports:
+      - ${EXTERNAL_IP}:80:80
+      - ${EXTERNAL_IP}:443:443
+    volumes:
+      - ./config/nginx.subdomains.conf:/etc/nginx/nginx.conf.template
+      - ./scripts/nginx_entrypoint.sh:/nginx_entrypoint.sh
+    environment:
+      - PGADMIN_SUBDOMAIN=${PGADMIN_SUBDOMAIN}
+      - MINIO_SUBDOMAIN=${MINIO_SUBDOMAIN}
+
+
+networks:
+  shopbot-network:
+
+volumes:
+  postgres-data:
+  pgadmin-data:
+  minio-data:

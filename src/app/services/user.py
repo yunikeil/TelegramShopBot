@@ -7,7 +7,7 @@ from app.models.user import User
 
 
 async def create_user(db_session: AsyncSession, tg_id: int, role: str | None = None):
-    user = User(tg_id=tg_id, role=role, created_at=int(time.time()))
+    user = User(tg_id=tg_id, role=role)
     db_session.add(user)
     await db_session.commit()
     await db_session.refresh(user)

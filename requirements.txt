@@ -1,13 +1,15 @@
-asyncpg
 sqlalchemy[asyncio]
+asyncpg
 alembic
-redis
-python-dotenv
+minio
 
 python-telegram-bot[all]
 aiofiles
 
+python-dotenv
 pydantic
+pydantic-settings
+
 pytest
 
 colorlog

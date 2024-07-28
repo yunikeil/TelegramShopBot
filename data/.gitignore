@@ -1,0 +1,6 @@
+/*
+/temp/*
+
+!.gitignore
+!/temp
+!/temp/.gitkeep

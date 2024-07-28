@@ -183,5 +183,3 @@ test[0-9].py
 # Library examples
 examples/
 
-# Files path
-data/
